@@ -70,6 +70,8 @@ public class Disclosure {
 	}
 
 	private static HashSet<String> makeNewOutput() {
+		if(counterOutput == 8)
+			printArray(databaseSets);
 		counterOutput++;
 		return destSets.get(counterOutput - 1);
 	}
@@ -81,11 +83,17 @@ public class Disclosure {
 			databaseSets.add(currentSet);
 			if (evaluate(currentSet)) {
 				for (int i = 0; i < databaseSets.size(); i++) {
-					if (evaluate(databaseSets.get(i)))
-						i = 0;
-
+					if (evaluate(databaseSets.get(i))){
+						System.out.println("wrap " + i);
+						i = -1;
+					}
 				}
 			}
+			
+//			printArray(databaseSets);
+			printArray(learningSets);
+			System.out.println();
+			
 		}
 	}
 
@@ -99,8 +107,16 @@ public class Disclosure {
 				match = j;
 		}
 		if (dis == learningSets.size() - 1) {
+			System.out.println("/////");
+			printSet(learningSets.get(match));
+			printSet(currentSet);
+			if(match == 2 && databaseSets.indexOf(currentSet) == 1)
+				printSet(databaseSets.get(0));
 			reduceLearningSet(match, currentSet);
 			reduceDatabase();
+			databaseSets.remove(currentSet);
+			printSet(learningSets.get(match));
+			System.out.println("------");
 			return true;
 		}
 		return false;
@@ -117,7 +133,8 @@ public class Disclosure {
 	}
 
 	private static void reduceLearningSet(int match, HashSet<String> currentSet) {
-		System.out.println("match " + match);
+		System.out.println("a" + databaseSets.indexOf(currentSet) + " d" + match);
+		System.out.println();
 		badRecievers.addAll(difference(currentSet, learningSets.get(match)));
 
 		intersect(learningSets.get(match), currentSet);
