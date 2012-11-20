@@ -18,19 +18,19 @@ public class Disclosure {
 										   {"B","J","N","R","Y"},
 										   {"C","D","Q","V","Z"}};
 
-	private static ArrayList<HashSet<String>> disjointSets;
-	private static ArrayList<HashSet<String>> learningSets;
-	private static ArrayList<HashSet<String>> destSets;
-	private static ArrayList<HashSet<String>> outputSets;
+	private static ArrayList<HashSet<String>> disjointSets = new ArrayList<HashSet<String>>();
+	private static ArrayList<HashSet<String>> learningSets = new ArrayList<HashSet<String>>();
+	private static ArrayList<HashSet<String>> destSets = new ArrayList<HashSet<String>>();
+	private static ArrayList<HashSet<String>> outputSets = new ArrayList<HashSet<String>>();
 	private static int counterInstance = 0;
 	private static int counterOutput = 0;
-	private static final int b = 10; //senders
-	private static final int n = 10; //receives
-	private static final int N = 100; //total users of system;
+	private static final int b = 5; //senders
+	private static final int n = 5; //receives
+	private static final int N = 26; //total users of system;
 	private static final int m = 4; // Number of friends
 	
 	public static void main(String[] args) {
-		//makeSets();
+		makeSets();
 		learningPhase();
 		executionPhase();
 	}
@@ -82,13 +82,15 @@ public class Disclosure {
 	
 	
 	private static void executionPhase() {
-		int i = 0;
 		int dis = 0;
 		int match = 0;
 		while(!isDone()) {
 			HashSet<String> currentSet = null;
 			while(dis < learningSets.size() - 1) {
+				dis = 0;
 				currentSet = makeNewOutput();
+				
+				
 				for (int j = 0; j < learningSets.size(); j++) {
 					if(isDisjoint(currentSet,learningSets.get(j)))
 						dis++;
@@ -100,17 +102,37 @@ public class Disclosure {
 			if(dis == learningSets.size() - 1) {
 				reduceLearningSet(match,currentSet); //ELSE
 			}
+			match = -1;
 		}
 	}
 	
 	private static void reduceLearningSet(int match, HashSet<String> currentSet) {
+		System.out.println("match " + match);
 		HashSet<String> badRecievers = difference(currentSet, learningSets.get(match));
+		printSet(badRecievers);
+
 		for (HashSet<String> set : learningSets) {
 			intersect(set,badRecievers);
 		}
+		
 	}
 
-
+	private static void printSet(HashSet<String> set) {
+		for (String string : set) {
+			System.out.print(string + " ");
+		}
+		System.out.println();
+	}
+	
+	private static void printArray(ArrayList<HashSet<String>> array) {
+		for (HashSet<String> set : array) {
+			for (String string : set) {
+				System.out.print(string);
+			}
+			System.out.println();
+		}
+	}
+	
 	private static boolean isDone() {
 		for (HashSet<String> set : learningSets) {
 			if(set.size() != 1)	return false;
