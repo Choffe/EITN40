@@ -2,7 +2,6 @@ package h2;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 public class Disclosure {
 	private static String[][] disjoint	= {{"C","K","L","P","X"},
@@ -20,45 +19,103 @@ public class Disclosure {
 										   {"C","D","Q","V","Z"}};
 
 	private static ArrayList<HashSet<String>> disjointSets;
+	private static ArrayList<HashSet<String>> learningSets;
+	private static ArrayList<HashSet<String>> destSets;
 	private static ArrayList<HashSet<String>> outputSets;
-	
-	private final int b = 10; //senders
-	private final int n = 10; //receives
-	private final int N = 100; //total users of system;
-	private final int m = 4; // Number of friends
+	private static int counterInstance = 0;
+	private static int counterOutput = 0;
+	private static final int b = 10; //senders
+	private static final int n = 10; //receives
+	private static final int N = 100; //total users of system;
+	private static final int m = 4; // Number of friends
 	
 	public static void main(String[] args) {
-		makeSets();
+		//makeSets();
 		learningPhase();
 		executionPhase();
 	}
 
 
 	private static void makeSets() {
-		for (String[] s : disjoint) {
+		//DISJOINT
+		for (String[] array : disjoint) {
 			HashSet<String> set = new HashSet<String>();
+			for (String s : array) {
+				set.add(s);
+			}
+			disjointSets.add(set);
 		}
-		
+		//DESTINATION
+		for (String[] array : dest) {
+			HashSet<String> set = new HashSet<String>();
+			for (String s : array) {
+				set.add(s);
+			}
+			destSets.add(set);
+		}
 	}
 
 
 	private static void learningPhase() {
-		makeInstance();
+		while(learningSets.size() < m) {
+			HashSet<String> A = makeInstance();
+			int i = 0;
+			for (HashSet<String> B : learningSets) {
+				if(isDisjoint(A,B)) i++;
+			}
+			if(i == learningSets.size())
+				learningSets.add(A);
+		}
 	}
 
 
 	private static HashSet<String> makeInstance() {
-		return null;
+		counterInstance++;
+		return disjointSets.get(counterInstance - 1);
 	}
 
 	
-	private static void executionPhase() {
-		
+	private static HashSet<String> makeNewOutput() {
+		counterOutput++;
+		return destSets.get(counterOutput - 1);
 	}
 	
+	
+	private static void executionPhase() {
+		int i = 0;
+		int dis = 0;
+		int match = 0;
+		while(!isDone()) {
+			HashSet<String> currentSet = null;
+			while(dis < learningSets.size() - 1) {
+				currentSet = makeNewOutput();
+				for (int j = 0; j < learningSets.size(); j++) {
+					if(isDisjoint(currentSet,learningSets.get(j)))
+						dis++;
+					else {
+						match = j;
+					}
+				}
+			}
+			if(dis == learningSets.size() - 1) {
+				reduceLearningSet(match,currentSet); //ELSE
+			}
+		}
+	}
+	
+	private static void reduceLearningSet(int match, HashSet<String> currentSet) {
+		HashSet<String> badRecievers = difference(currentSet, learningSets.get(match));
+		for (HashSet<String> set : learningSets) {
+			intersect(set,badRecievers);
+		}
+	}
+
+
 	private static boolean isDone() {
-		
-		return false;
+		for (HashSet<String> set : learningSets) {
+			if(set.size() != 1)	return false;
+		}
+		return true;
 	}
 	
 	private static HashSet<String> union(HashSet<String> A, HashSet<String> B) {
@@ -68,18 +125,21 @@ public class Disclosure {
 	}
 	
 	private static HashSet<String> intersect(HashSet<String> A, HashSet<String> B) {
-		HashSet<String> a = new HashSet<String>(A);
-		a.retainAll(B);
-		return a;
+		A.retainAll(B);
+		return A;
 	}
 	
 	private static HashSet<String> difference(HashSet<String> A, HashSet<String> B) {
 		HashSet<String> a = new HashSet<String>(A);
-		a.removeAll(B);
-		return a;
+		HashSet<String> u = union(A,B);
+		a.retainAll(B);
+		u.removeAll(a);
+		return u;
 	}
 	
 	private static boolean isDisjoint(HashSet<String> A, HashSet<String> B) {
-		return intersect(A,B).size() == 0;
+		HashSet<String> a = new HashSet<String>(A);
+		a.retainAll(B);
+		return a.size() == 0;
 	}
 }
