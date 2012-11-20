@@ -21,7 +21,7 @@ public class Disclosure {
 	private static ArrayList<HashSet<String>> disjointSets = new ArrayList<HashSet<String>>();
 	private static ArrayList<HashSet<String>> learningSets = new ArrayList<HashSet<String>>();
 	private static ArrayList<HashSet<String>> destSets = new ArrayList<HashSet<String>>();
-	private static ArrayList<HashSet<String>> outputSets = new ArrayList<HashSet<String>>();
+	private static ArrayList<HashSet<String>> databaseSets = new ArrayList<HashSet<String>>();
 	private static int counterInstance = 0;
 	private static int counterOutput = 0;
 	private static final int b = 5; //senders
@@ -88,8 +88,8 @@ public class Disclosure {
 			HashSet<String> currentSet = null;
 			while(dis < learningSets.size() - 1) {
 				dis = 0;
+				match = -1;
 				currentSet = makeNewOutput();
-				
 				
 				for (int j = 0; j < learningSets.size(); j++) {
 					if(isDisjoint(currentSet,learningSets.get(j)))
@@ -102,13 +102,14 @@ public class Disclosure {
 			if(dis == learningSets.size() - 1) {
 				reduceLearningSet(match,currentSet); //ELSE
 			}
-			match = -1;
 		}
 	}
 	
 	private static void reduceLearningSet(int match, HashSet<String> currentSet) {
 		System.out.println("match " + match);
 		HashSet<String> badRecievers = difference(currentSet, learningSets.get(match));
+		intersect(learningSets.get(match),currentSet);
+		
 		printSet(badRecievers);
 
 		for (HashSet<String> set : learningSets) {
