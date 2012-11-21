@@ -34,26 +34,23 @@ public class Disclosure {
 		executionPhase();
 	}
 
-	private static void testRandom() { //SPARA I SET ISTÄLLET MED STRING SÅ ÄR SAKEN BIFF
+	private static void testRandom() {
 		Random rnd = new Random(1337);
-		String[] s = new String[m];
-		HashSet<Character> set = new HashSet<Character>();
+		HashSet<Character> used = new HashSet<Character>();
 		for (int i = 0; i < m; i++) {
-			String line = "";
+			HashSet<String> set = new HashSet<String>();
 			char a  = (char) (65 + i);
-			line += a;
-			set.add(a);
+			used.add(a);
+			set.add(""+a);
 			int j = 0;
 			while(j < m) {
 				char c = (char) (65 + rnd.nextInt(26-m) + m);
-				if(!set.contains(c)) {
-					line += c;
-					set.add(c);
+				if(!used.contains(c)) {
+					used.add(c);
+					set.add("" + c);
 					j++;
 				}
 			}
-			s[i] = line;
-			System.out.println(s[i]);
 		}
 	}
 
