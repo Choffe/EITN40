@@ -2,6 +2,7 @@ package h2;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 
 public class Disclosure {
 	private static String[][] disjoint = { { "C", "K", "L", "P", "X" },
@@ -27,9 +28,33 @@ public class Disclosure {
 	private static final int m = 4; // Number of friends
 
 	public static void main(String[] args) {
+		testRandom();
 		makeSets();
 		learningPhase();
 		executionPhase();
+	}
+
+	private static void testRandom() { //SPARA I SET ISTÄLLET MED STRING SÅ ÄR SAKEN BIFF
+		Random rnd = new Random(1337);
+		String[] s = new String[m];
+		HashSet<Character> set = new HashSet<Character>();
+		for (int i = 0; i < m; i++) {
+			String line = "";
+			char a  = (char) (65 + i);
+			line += a;
+			set.add(a);
+			int j = 0;
+			while(j < m) {
+				char c = (char) (65 + rnd.nextInt(26-m) + m);
+				if(!set.contains(c)) {
+					line += c;
+					set.add(c);
+					j++;
+				}
+			}
+			s[i] = line;
+			System.out.println(s[i]);
+		}
 	}
 
 	private static void makeSets() {
