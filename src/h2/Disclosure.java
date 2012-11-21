@@ -28,30 +28,30 @@ public class Disclosure {
 	private static final int m = 4; // Number of friends
 
 	public static void main(String[] args) {
-		testRandom();
+		makeRandomInstance(1);
 		makeSets();
 		learningPhase();
 		executionPhase();
 	}
 
-	private static void testRandom() {
+	private static void makeRandomInstance(int offset) {
 		Random rnd = new Random(1337);
 		HashSet<Character> used = new HashSet<Character>();
-		for (int i = 0; i < m; i++) {
-			HashSet<String> set = new HashSet<String>();
-			char a  = (char) (65 + i);
-			used.add(a);
-			set.add(""+a);
-			int j = 0;
-			while(j < m) {
-				char c = (char) (65 + rnd.nextInt(26-m) + m);
-				if(!used.contains(c)) {
-					used.add(c);
-					set.add("" + c);
-					j++;
-				}
+
+		HashSet<String> set = new HashSet<String>();
+		char a = (char) (65 + offset);
+		used.add(a);
+		set.add("" + a);
+		int j = 0;
+		while (j < m) {
+			char c = (char) (65 + rnd.nextInt(26 - m) + m);
+			if (!used.contains(c)) {
+				used.add(c);
+				set.add("" + c);
+				j++;
 			}
 		}
+
 	}
 
 	private static void makeSets() {
