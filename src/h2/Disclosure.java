@@ -20,6 +20,7 @@ public class Disclosure {
 	private static ArrayList<HashSet<String>> destSets = new ArrayList<HashSet<String>>();
 	private static ArrayList<HashSet<String>> databaseSets = new ArrayList<HashSet<String>>();
 	private static HashSet<String> badRecievers = new HashSet<String>();
+	private static Random rnd = new Random(1337);
 	private static int counterInstance = 0;
 	private static int counterOutput = 0;
 	private static final int b = 5; // senders
@@ -43,14 +44,29 @@ public class Disclosure {
 		used.add(a);
 		set.add("" + a);
 		int j = 0;
-		while (j < m) {
-			char c = (char) (65 + rnd.nextInt(26 - m) + m);
+		while (j < n) {
+			char c = (char) (65 + rnd.nextInt(N - m) + m);
 			if (!used.contains(c)) {
 				used.add(c);
 				set.add("" + c);
 				j++;
 			}
 		}
+
+	}
+	
+	private static HashSet<String> makeRandomOutput() {
+
+		HashSet<String> set = new HashSet<String>();
+		char a = (char) (65 + rnd.nextInt(m));
+		set.add("" + a);
+		int j = 0;
+		while (j < n) {
+			char c = (char) (65 + rnd.nextInt(N - m) + m);
+			set.add("" + c);
+			j++;
+		}
+		return set;
 
 	}
 
@@ -100,7 +116,7 @@ public class Disclosure {
 
 	private static void executionPhase() {
 		while (!isDone()) {
-			HashSet<String> currentSet = makeNewOutput();
+			HashSet<String> currentSet = makeRandomOutput();
 			reduceSet(currentSet);
 			databaseSets.add(currentSet);
 			if (evaluate(currentSet)) {
