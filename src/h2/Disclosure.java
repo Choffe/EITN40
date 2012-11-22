@@ -24,13 +24,20 @@ public class Disclosure {
 	private static Random rnd = new Random(1337);
 	private static int counterInstance = 0;
 	private static int counterOutput = 0;
+	private static int counterNumberNeededOutput = 0;
+	
 	private static final int b = 5; // senders
 	private static final int n = 5; // receives
 	private static final int N = 26; // total users of system;
 	private static final int m = 4; // Number of friends
 
 	public static void main(String[] args) {
-		makeRandomInstance(1);
+//		makeRandomInstance(1);
+		friends.add("C");
+		friends.add("R");
+		friends.add("M");
+		friends.add("T");
+
 		makeSets();
 		learningPhase();
 		executionPhase();
@@ -38,6 +45,7 @@ public class Disclosure {
 		for (String s : friends) {
 			System.out.println(s);
 		}
+		System.out.println("Needed output sets "+ counterNumberNeededOutput);
 	}
 
 	private static void makeRandomInstance(int offset) {
@@ -120,7 +128,8 @@ public class Disclosure {
 
 	private static void executionPhase() {
 		while (!isDone()) {
-			HashSet<String> currentSet = makeRandomOutput();
+			counterNumberNeededOutput++;
+			HashSet<String> currentSet = makeRandomOutput(); //makeNewOutput();
 			reduceSet(currentSet);
 			databaseSets.add(currentSet);
 			if (evaluate(currentSet)) {
