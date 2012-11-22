@@ -19,8 +19,9 @@ public class Disclosure {
 	private static ArrayList<HashSet<String>> learningSets = new ArrayList<HashSet<String>>();
 	private static ArrayList<HashSet<String>> destSets = new ArrayList<HashSet<String>>();
 	private static ArrayList<HashSet<String>> databaseSets = new ArrayList<HashSet<String>>();
-	private static ArrayList<String> friends = new ArrayList<String>();
+	private static HashSet<String> friends = new HashSet<String>();
 	private static HashSet<String> badRecievers = new HashSet<String>();
+	private static HashSet<String> used = new HashSet<String>();
 	private static Random rnd = new Random(1337);
 	private static int counterInstance = 0;
 	private static int counterOutput = 0;
@@ -32,14 +33,15 @@ public class Disclosure {
 	private static final int m = 4; // Number of friends
 
 	public static void main(String[] args) {
-//		makeRandomInstance(1);
-		friends.add("C");
-		friends.add("R");
-		friends.add("M");
-		friends.add("T");
-
-		makeSets();
+//		friends.add("C");
+//		friends.add("R");
+//		friends.add("M");
+//		friends.add("T");
+		
+//		makeSets();
+		System.out.println("hej");
 		learningPhase();
+		System.out.println("hej2");
 		executionPhase();
 		System.out.println("Real friends");
 		for (String s : friends) {
@@ -48,9 +50,7 @@ public class Disclosure {
 		System.out.println("Needed output sets "+ counterNumberNeededOutput);
 	}
 
-	private static void makeRandomInstance(int offset) {
-		Random rnd = new Random(1337);
-
+	private static HashSet<String> makeRandomInstance(int offset) {
 		HashSet<String> set = new HashSet<String>();
 		char a = (char) (65 + offset);
 		friends.add(""+a);
@@ -58,20 +58,21 @@ public class Disclosure {
 		int j = 0;
 		while (j < n-1) {
 			char c = (char) (65 + rnd.nextInt(N - m) + m);
-			if (!friends.contains(c)) {
-				friends.add(""+c);
+			if (!used.contains(c)) {
 				set.add("" + c);
+				used.add("" + c);
 				j++;
 			}
 		}
-
+		return set;
 	}
 	
 	private static HashSet<String> makeRandomOutput() {
 		
 		HashSet<String> set = new HashSet<String>();
-		String a = friends.get(rnd.nextInt(m));
-		set.add(a);
+		char a = (char) (65 + rnd.nextInt(m));
+		System.out.println("MAKERANDOMOUTPUT " + a);
+		set.add("" + a);
 		int j = 0;
 		while (j < n-1) {
 			char c = (char) (65 + rnd.nextInt(N - m) + m);
@@ -103,7 +104,7 @@ public class Disclosure {
 
 	private static void learningPhase() {
 		while (learningSets.size() < m) {
-			HashSet<String> A = makeInstance();
+			HashSet<String> A = makeRandomInstance(learningSets.size());
 			int i = 0;
 			for (HashSet<String> B : learningSets) {
 				if (isDisjoint(A, B))
