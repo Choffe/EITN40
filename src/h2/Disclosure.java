@@ -19,6 +19,7 @@ public class Disclosure {
 	private static ArrayList<HashSet<String>> learningSets = new ArrayList<HashSet<String>>();
 	private static ArrayList<HashSet<String>> destSets = new ArrayList<HashSet<String>>();
 	private static ArrayList<HashSet<String>> databaseSets = new ArrayList<HashSet<String>>();
+	private static ArrayList<String> friends = new ArrayList<String>();
 	private static HashSet<String> badRecievers = new HashSet<String>();
 	private static Random rnd = new Random(1337);
 	private static int counterInstance = 0;
@@ -33,21 +34,24 @@ public class Disclosure {
 		makeSets();
 		learningPhase();
 		executionPhase();
+		System.out.println("Real friends");
+		for (String s : friends) {
+			System.out.println(s);
+		}
 	}
 
 	private static void makeRandomInstance(int offset) {
 		Random rnd = new Random(1337);
-		HashSet<Character> used = new HashSet<Character>();
 
 		HashSet<String> set = new HashSet<String>();
 		char a = (char) (65 + offset);
-		used.add(a);
+		friends.add(""+a);
 		set.add("" + a);
 		int j = 0;
-		while (j < n) {
+		while (j < n-1) {
 			char c = (char) (65 + rnd.nextInt(N - m) + m);
-			if (!used.contains(c)) {
-				used.add(c);
+			if (!friends.contains(c)) {
+				friends.add(""+c);
 				set.add("" + c);
 				j++;
 			}
@@ -56,12 +60,12 @@ public class Disclosure {
 	}
 	
 	private static HashSet<String> makeRandomOutput() {
-
+		
 		HashSet<String> set = new HashSet<String>();
-		char a = (char) (65 + rnd.nextInt(m));
-		set.add("" + a);
+		String a = friends.get(rnd.nextInt(m));
+		set.add(a);
 		int j = 0;
-		while (j < n) {
+		while (j < n-1) {
 			char c = (char) (65 + rnd.nextInt(N - m) + m);
 			set.add("" + c);
 			j++;
